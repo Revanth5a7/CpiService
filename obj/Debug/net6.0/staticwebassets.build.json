@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "A19Rm+Ul4dTkGXQqYMDRkydIJRj9iydtguahvONpO60=",
+  "Source": "CpiService",
+  "BasePath": "_content/CpiService",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

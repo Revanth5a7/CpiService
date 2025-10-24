@@ -1,5 +1,5 @@
-###CpiService API
-#Overview
+### CpiService API
+# Overview
 
 CpiService is a scalable ASP.NET Core 8 REST API built in C# that fetches and caches Consumer Price Index (CPI) data from the U.S. Bureau of Labor Statistics (BLS) Public API. The API provides CPI values for a given month and year, along with any associated notes. It implements JWT authentication and in-memory caching to optimize performance and prevent exceeding API call limits.
 

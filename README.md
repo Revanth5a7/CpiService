@@ -1,9 +1,9 @@
-### CpiService API
-# Overview
+# CpiService API
+### Overview
 
 CpiService is a scalable ASP.NET Core 8 REST API built in C# that fetches and caches Consumer Price Index (CPI) data from the U.S. Bureau of Labor Statistics (BLS) Public API. The API provides CPI values for a given month and year, along with any associated notes. It implements JWT authentication and in-memory caching to optimize performance and prevent exceeding API call limits.
 
-#Features
+### Features
 
 Fetch CPI data for a specific month and year.
 
@@ -17,11 +17,11 @@ Dockerized for easy deployment.
 
 Ready for AWS deployment (ECR + ECS/Fargate or Elastic Beanstalk).
 
-Project Structure
+### Project Structure
 CpiService/
 │
 ├── Controllers/
-│   ├── CpiController.cs       # Handles CPI requests
+│   ├── CpiController.cs       Handles CPI requests
 │   └── AuthController.cs      # JWT token generation
 │
 ├── Models/
@@ -40,8 +40,8 @@ CpiService/
 ├── Dockerfile
 └── README.md
 
-API Endpoints
-1. Get JWT Token
+### API Endpoints
+##### 1. Get JWT Token
 
 POST /api/auth/token
 
@@ -64,7 +64,7 @@ Use this token for authorization in the Authorization header:
 
 Authorization: Bearer <JWT_TOKEN_HERE>
 
-2. Get CPI Data
+##### 2. Get CPI Data
 
 GET /api/cpi?year={year}&month={month}
 
@@ -89,7 +89,7 @@ Response:
 
 Notes will be empty if no footnotes are available for the selected month.
 
-Caching
+### Caching
 
 CPI data is cached in memory for 1 day.
 
@@ -97,7 +97,7 @@ Prevents unnecessary calls to the BLS API (which has a rate limit of 25 calls/da
 
 Cache can be replaced with Redis for distributed deployments.
 
-Running the API
+### Running the API
 Locally
 git clone https://github.com/<your-username>/CpiService.git
 cd CpiService
@@ -110,46 +110,38 @@ Get JWT token via /api/auth/token
 
 Call /api/cpi with Authorization: Bearer <token>
 
-Using Docker
+### Using Docker
 docker build -t cpi-service .
 docker run -p 7065:80 cpi-service
 
-AWS Deployment
+### AWS Deployment
 
-Build Docker image:
+##### Build Docker image:
 
 docker build -t cpi-service .
 
 
-Push to AWS ECR:
+##### Push to AWS ECR:
 
 aws ecr create-repository --repository-name cpi-service
 docker tag cpi-service:latest <aws_account_id>.dkr.ecr.<region>.amazonaws.com/cpi-service:latest
 docker push <aws_account_id>.dkr.ecr.<region>.amazonaws.com/cpi-service:latest
 
 
-Deploy using AWS Fargate (ECS) or Elastic Beanstalk.
+##### Deploy using AWS Fargate (ECS) or Elastic Beanstalk.
 
-Technologies Used
+### Technologies Used
 
-ASP.NET Core 8.0
+- ASP.NET Core 8.0
+- C# 11
+- JWT Authentication
+- IMemoryCache
+- HttpClient for external API calls
+- Swagger UI
+- Docker
+- Postman
 
-C# 11
-
-JWT Authentication
-
-IMemoryCache
-
-HttpClient for external API calls
-
-Swagger UI
-
-Docker
-
-Notes
+### Notes
 
 Currently uses national CPI dataset (CUUR0000SA0).
-
-JWT secret is hardcoded for demonstration — replace with AWS Secrets Manager or environment variables in production.
-
-API is stateless, so it scales well in cloud deployments.
+JWT secret is hardcoded for demonstration — replace with AWS Secrets Manager or environment variables in production. API is stateless, so it scales well in cloud deployments.

@@ -17,26 +17,39 @@ namespace CpiService.Services
         public async Task<CpiResponse?> GetCpiDataAsync(int year, string month)
         {
             var url = $"{BaseUrl}?startyear={year}&endyear={year}";
+
+            // Fetch response as JsonElement
             var response = await _httpClient.GetFromJsonAsync<JsonElement>(url);
 
-            if (!response.TryGetProperty("Results", out var results)) return null;
-            if (!results.TryGetProperty("series", out var seriesArray)) return null;
+            // Optional: print full response for debugging
+            Console.WriteLine("BLS API Response:\n" + JsonSerializer.Serialize(response, new JsonSerializerOptions { WriteIndented = true }));
+
+            // Navigate safely through JSON
+            if (!response.TryGetProperty("Results", out var results) ||
+                !results.TryGetProperty("series", out var seriesArray) ||
+                seriesArray.GetArrayLength() == 0)
+                return null;
 
             var series = seriesArray[0];
-            if (!series.TryGetProperty("data", out var dataArray)) return null;
 
+            if (!series.TryGetProperty("data", out var dataArray))
+                return null;
+
+            // Find matching month/year
             var matching = dataArray
                 .EnumerateArray()
                 .FirstOrDefault(d =>
                     d.GetProperty("year").GetString() == year.ToString() &&
-                    string.Equals(d.GetProperty("periodName").GetString(), month, StringComparison.OrdinalIgnoreCase));
+                    string.Equals(d.GetProperty("periodName").GetString()?.Trim(), month.Trim(), StringComparison.OrdinalIgnoreCase));
 
             if (matching.ValueKind == JsonValueKind.Undefined)
                 return null;
 
-            var valueStr = matching.GetProperty("value").GetString();
+            // Parse CPI value
+            var valueStr = matching.GetProperty("value").GetString() ?? "0";
             int cpiValue = (int)Math.Round(Convert.ToDouble(valueStr));
 
+            // Parse notes
             string notes = "";
             if (matching.TryGetProperty("footnotes", out var footnotes))
             {

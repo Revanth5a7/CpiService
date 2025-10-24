@@ -1,33 +1,53 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using CpiService.Services;
+using CpiService.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+// Add services
 builder.Services.AddControllers();
-
-// Add Swagger/OpenAPI support
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add memory cache (needed later for caching service)
+// Add memory cache and HTTP client
 builder.Services.AddMemoryCache();
-
-// Add HTTP client for BLS API service
 builder.Services.AddHttpClient<BlsApiService>();
-
-// Add CPI cache service
 builder.Services.AddScoped<CpiCacheService>();
+
+// JWT setup
+var key = "ThisIsASampleSecretKey12345!"; // You can move this to appsettings.json
+builder.Services.AddSingleton(new JwtAuthenticationManager(key));
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
+// Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// No authentication yet, just controllers
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

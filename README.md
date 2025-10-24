@@ -142,6 +142,22 @@ docker run -p 7065:80 cpi-service
 
 docker build -t cpi-service .
 
+### I/O Sample Snapshots
+##### 1. Input to get Jwt token
+
+<img width="931" height="436" alt="Screenshot 2025-10-24 095218" src="https://github.com/user-attachments/assets/1298a4c2-8e9c-48bb-8707-8385f055a95a" />
+
+##### 2. Jwt token
+
+<img width="925" height="193" alt="successfull token" src="https://github.com/user-attachments/assets/ee84c39b-04a6-4ea4-87c0-8b90fe81f26c" />
+
+##### 3. Get CpiRequest
+<img width="642" height="240" alt="get cpiRequest" src="https://github.com/user-attachments/assets/9ddef05d-4178-4371-ab52-de054def3ba1" />
+
+
+##### 4. CpiResponse
+<img width="643" height="155" alt="cpiResponse" src="https://github.com/user-attachments/assets/f4ef95ed-0c3e-40bf-b226-1433873086a6" />
+
 
 ##### Push to AWS ECR:
 

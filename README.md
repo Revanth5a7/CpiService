@@ -78,6 +78,28 @@ Headers:
 
 Authorization: Bearer <JWT_TOKEN_HERE>
 
+return response Json from API call -
+{
+  "status": "REQUEST_SUCCEEDED",
+  "Results": {
+    "series": [
+      {
+        "seriesID": "CUUR0000SA0",
+        "data": [
+          {
+            "year": "2025",
+            "period": "M08",
+            "periodName": "August",
+            "value": "323.976",
+            "footnotes": [{}]
+          }
+        ]
+      }
+    ]
+  }
+}
+
+
 
 Response:
 

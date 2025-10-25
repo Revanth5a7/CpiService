@@ -216,10 +216,8 @@ Use Swagger or Postman with JWT authentication to test API endpoints:
 
 POST /api/auth/token → get JWT
 
-GET /api/cpi?year=<YEAR>&month=<MONTH> → fetch CPI data
-aws ecr create-repository --repository-name cpi-service
-docker tag cpi-service:latest <aws_account_id>.dkr.ecr.<region>.amazonaws.com/cpi-service:latest
-docker push <aws_account_id>.dkr.ecr.<region>.amazonaws.com/cpi-service:latest
+GET /api/cpi?year=<YEAR>&month=<MONTH> → fetch CPI data \n \n
+
 
 
 ### Technologies Used

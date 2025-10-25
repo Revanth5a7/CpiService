@@ -136,11 +136,6 @@ Call /api/cpi with Authorization: Bearer <token>
 docker build -t cpi-service .
 docker run -p 7065:80 cpi-service
 
-### AWS Deployment
-
-##### Build Docker image:
-
-docker build -t cpi-service .
 
 ### I/O Sample Snapshots
 ##### 1. Input to get Jwt token
@@ -159,14 +154,73 @@ docker build -t cpi-service .
 <img width="643" height="155" alt="cpiResponse" src="https://github.com/user-attachments/assets/f4ef95ed-0c3e-40bf-b226-1433873086a6" />
 
 
-##### Push to AWS ECR:
+##### AWS Deployment Instructions
 
+Once the Docker container is built and tested locally, the application can be deployed to AWS using the following steps:
+
+1. Push Docker Image to AWS ECR (Elastic Container Registry)
+
+Login to ECR:
+
+aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <aws_account_id>.dkr.ecr.<region>.amazonaws.com
+
+
+Create an ECR repository (if not already created):
+
+aws ecr create-repository --repository-name cpi-service
+
+
+Tag the local Docker image:
+
+docker tag cpi-service:latest <aws_account_id>.dkr.ecr.<region>.amazonaws.com/cpi-service:latest
+
+
+Push the image to ECR:
+
+docker push <aws_account_id>.dkr.ecr.<region>.amazonaws.com/cpi-service:latest
+
+
+2. Deploy the Container on AWS
+
+Option A: AWS Fargate (Serverless ECS)
+
+Create an ECS Cluster (Networking only / Fargate).
+
+Define a Task Definition:
+
+Set container image from ECR.
+
+Allocate CPU, memory, and configure port mapping (container port 80 → host port 8080).
+
+Create a Service using the task definition and optionally attach a Load Balancer.
+
+Option B: AWS Elastic Beanstalk
+
+Create a new Docker environment.
+
+Upload Docker image (or provide Dockerrun.aws.json pointing to ECR).
+
+Elastic Beanstalk automatically handles provisioning, scaling, and load balancing.
+
+3. Configure Networking
+
+Ensure the ECS Service or Elastic Beanstalk environment is in a public subnet.
+
+Allow inbound traffic on port 80 (or mapped port 8080) in the Security Group.
+
+4. Test the API
+
+Obtain the public URL from Fargate service or Elastic Beanstalk environment.
+
+Use Swagger or Postman with JWT authentication to test API endpoints:
+
+POST /api/auth/token → get JWT
+
+GET /api/cpi?year=<YEAR>&month=<MONTH> → fetch CPI data
 aws ecr create-repository --repository-name cpi-service
 docker tag cpi-service:latest <aws_account_id>.dkr.ecr.<region>.amazonaws.com/cpi-service:latest
 docker push <aws_account_id>.dkr.ecr.<region>.amazonaws.com/cpi-service:latest
 
-
-##### Deploy using AWS Fargate (ECS) or Elastic Beanstalk.
 
 ### Technologies Used
 
